@@ -1,0 +1,261 @@
+[
+  {
+    "id": "account-create",
+    "category": "Account",
+    "question": "How do I create an account?",
+    "answer": "Click 'Sign up' in the top-right corner of the LearnSphere homepage, then enter your email and a password, or continue with Google or GitHub. We'll send a verification link to your email; click it to activate your account.",
+    "keywords": ["sign up", "signup", "register", "registration", "create account", "new account", "join"]
+  },
+  {
+    "id": "password-reset",
+    "category": "Account",
+    "question": "How do I reset my password?",
+    "answer": "On the login page, click 'Forgot password?', enter the email linked to your account, and we'll send you a reset link. The link is valid for 60 minutes. If it has expired, simply request a new one.",
+    "keywords": ["forgot password", "reset password", "change password", "lost password", "cannot log in", "login problem", "log in", "locked out"]
+  },
+  {
+    "id": "change-email",
+    "category": "Account",
+    "question": "How can I change the email address on my account?",
+    "answer": "Go to Settings > Account > Email, enter your new address, and confirm it using the link we send to the new inbox. Your old email keeps working for login until the new one is confirmed.",
+    "keywords": ["change email", "update email", "new email address", "email address", "wrong email"]
+  },
+  {
+    "id": "delete-account",
+    "category": "Account",
+    "question": "How do I delete my account?",
+    "answer": "Go to Settings > Privacy > Delete account and follow the prompts. Deletion is permanent: your progress, certificates and saved notes are removed after a 14-day grace period during which you can still log in to cancel the request. Active subscriptions must be cancelled first.",
+    "keywords": ["delete account", "close account", "remove account", "deactivate", "close my account", "permanently"]
+  },
+  {
+    "id": "verify-email",
+    "category": "Account",
+    "question": "I didn't receive the verification email. What should I do?",
+    "answer": "First check your spam or promotions folder. If it isn't there, open the login page and click 'Resend verification email'. Make sure you typed your address correctly; if you didn't, update it in Settings > Account. Still stuck? Contact support.",
+    "keywords": ["verification email", "confirmation email", "never got email", "did not receive email", "resend", "verify email", "spam folder", "activation link"]
+  },
+  {
+    "id": "two-factor",
+    "category": "Security",
+    "question": "How do I enable two-factor authentication?",
+    "answer": "Go to Settings > Security > Two-factor authentication and choose an authenticator app (such as Google Authenticator or Authy) or SMS. Scan the QR code, enter the 6-digit code to confirm, and save your backup codes somewhere safe.",
+    "keywords": ["2fa", "two factor", "two-factor", "mfa", "multi-factor", "authenticator app", "extra security", "secure my account", "backup codes"]
+  },
+  {
+    "id": "profile-privacy",
+    "category": "Security",
+    "question": "Can I make my profile private?",
+    "answer": "Yes. In Settings > Privacy you can set your profile to Private so that only you can see your name, bio, badges and course activity. Certificates you choose to share remain visible through their verification link.",
+    "keywords": ["private profile", "hide profile", "profile visibility", "public profile", "who can see", "privacy settings"]
+  },
+  {
+    "id": "privacy-data",
+    "category": "Privacy",
+    "question": "How do you handle my personal data?",
+    "answer": "We never sell your personal data. Data is encrypted in transit and at rest, and we only collect what is needed to run your account and improve our courses. You can review the details in our Privacy Policy and manage your preferences in Settings > Privacy.",
+    "keywords": ["personal data", "data protection", "gdpr", "privacy policy", "do you sell my data", "information collected", "secure", "data safe"]
+  },
+  {
+    "id": "data-export",
+    "category": "Privacy",
+    "question": "How can I download a copy of my data?",
+    "answer": "Go to Settings > Privacy > Request data export. We'll prepare a ZIP file with your profile, progress and purchase history and email you a download link within 7 days. The link stays active for 48 hours.",
+    "keywords": ["download my data", "export data", "copy of my data", "data request", "data portability", "get my information"]
+  },
+  {
+    "id": "pricing",
+    "category": "Billing",
+    "question": "Are the courses free or paid?",
+    "answer": "Both. Many courses are completely free, including the certificate of completion for selected ones. Premium courses can be bought individually (prices are shown on each course page) or unlocked with a LearnSphere Plus subscription.",
+    "keywords": ["free", "price", "pricing", "cost", "how much", "paid courses", "charge", "fee"]
+  },
+  {
+    "id": "plus-plan",
+    "category": "Billing",
+    "question": "What does a LearnSphere Plus subscription include?",
+    "answer": "LearnSphere Plus costs $19 per month or $190 per year. It gives you unlimited access to all premium courses, offline downloads in the mobile app, unlimited quiz retakes and priority support.",
+    "keywords": ["plus", "subscription", "premium", "membership", "monthly plan", "yearly plan", "annual plan", "benefits", "unlimited access"]
+  },
+  {
+    "id": "payment-methods",
+    "category": "Billing",
+    "question": "What payment methods do you accept?",
+    "answer": "We accept Visa, Mastercard, American Express, PayPal, Apple Pay and Google Pay. Available methods can vary slightly by country and are shown at checkout.",
+    "keywords": ["payment methods", "credit card", "debit card", "visa", "mastercard", "amex", "paypal", "apple pay", "google pay", "pay with", "accept"]
+  },
+  {
+    "id": "failed-payment",
+    "category": "Billing",
+    "question": "My payment failed. What can I do?",
+    "answer": "Check that your card details, expiry date and billing address are correct and that you have sufficient funds. Some banks block online payments, so you may need to approve the charge with them. You can also try another payment method. If it keeps failing, contact support with a screenshot of the error.",
+    "keywords": ["payment failed", "card declined", "declined", "payment error", "transaction failed", "payment not working", "charge failed", "card rejected"]
+  },
+  {
+    "id": "refund-policy",
+    "category": "Billing",
+    "question": "What is your refund policy?",
+    "answer": "You can request a full refund within 14 days of purchase as long as you've completed less than 25% of the course. Subscriptions are refundable within 14 days of the first payment. Refunds go back to your original payment method within 5-10 business days.",
+    "keywords": ["refund", "money back", "get my money back", "reimburse", "return", "refund policy", "money-back guarantee", "charged by mistake"]
+  },
+  {
+    "id": "cancel-subscription",
+    "category": "Billing",
+    "question": "How do I cancel my subscription?",
+    "answer": "Go to Settings > Billing > Manage subscription and click 'Cancel subscription'. You keep your Plus benefits until the end of the current billing period, and you won't be charged again.",
+    "keywords": ["cancel", "cancel subscription", "cancelled", "stop subscription", "stop billing", "unsubscribe", "end membership", "stop monthly payment", "auto-renew", "renewal"]
+  },
+  {
+    "id": "invoice",
+    "category": "Billing",
+    "question": "Can I get an invoice or receipt for my purchase?",
+    "answer": "Yes. Open Settings > Billing > Payment history and click 'Download invoice' next to any payment. You can add your company name and tax ID to the invoice before downloading.",
+    "keywords": ["invoice", "receipt", "billing history", "payment history", "tax invoice", "vat", "proof of payment", "bill"]
+  },
+  {
+    "id": "discounts",
+    "category": "Billing",
+    "question": "Do you offer student discounts?",
+    "answer": "Yes. Students get 50% off LearnSphere Plus. Verify your status with a school email address (such as .edu) or a valid student ID under Settings > Billing > Student discount. The discount must be renewed once a year.",
+    "keywords": ["student discount", "discount", "coupon", "promo code", "promotion", "offer", "cheaper", "student", "voucher", "deal"]
+  },
+  {
+    "id": "gift",
+    "category": "Billing",
+    "question": "Can I gift a course to someone?",
+    "answer": "Yes. On any course page click 'Gift this course', enter the recipient's email and an optional message, and pay as usual. The recipient gets a redemption link and can start learning right away.",
+    "keywords": ["gift", "give a course", "buy for someone", "present", "gift card", "send a course", "birthday"]
+  },
+  {
+    "id": "enroll-course",
+    "category": "Courses",
+    "question": "How do I enroll in a course?",
+    "answer": "Open the course page and click 'Enroll'. For free courses you can start immediately. For paid courses you'll go through checkout first, after which the course appears in 'My learning'.",
+    "keywords": ["enroll", "enrol", "enrolment", "sign up for a course", "join a course", "start a course", "take a course", "buy course", "register for course"]
+  },
+  {
+    "id": "course-access-duration",
+    "category": "Courses",
+    "question": "How long do I have access to a course after enrolling?",
+    "answer": "Courses you buy individually are yours for life, including future updates. Courses unlocked through a Plus subscription stay available for as long as your subscription is active.",
+    "keywords": ["access duration", "how long access", "lifetime access", "expire", "expiry", "access expires", "keep access", "course available"]
+  },
+  {
+    "id": "course-duration",
+    "category": "Courses",
+    "question": "How long does a typical course take to finish?",
+    "answer": "Courses are self-paced. Most take 4 to 8 weeks if you study 3 to 5 hours per week, but the estimated duration is shown on every course page and you can go faster or slower.",
+    "keywords": ["how long", "course length", "duration", "time to complete", "weeks", "hours per week", "self-paced", "finish a course"]
+  },
+  {
+    "id": "course-prereqs",
+    "category": "Courses",
+    "question": "Do I need prior experience to take a course?",
+    "answer": "Not necessarily. Every course page shows a level (Beginner, Intermediate or Advanced) and a list of prerequisites. Beginner courses assume no prior knowledge.",
+    "keywords": ["prerequisites", "prior experience", "beginner", "requirements", "level", "background needed", "no experience", "skill level", "suitable for"]
+  },
+  {
+    "id": "deadlines",
+    "category": "Courses",
+    "question": "Are there deadlines for assignments?",
+    "answer": "Self-paced courses have no deadlines, so you can submit work whenever you like. Cohort-based courses have weekly deadlines which are listed in the course schedule; late submissions lose 10% per day.",
+    "keywords": ["deadline", "due date", "late submission", "assignment", "homework", "submit work", "cohort", "schedule"]
+  },
+  {
+    "id": "quiz-retakes",
+    "category": "Courses",
+    "question": "Can I retake a quiz or the final assessment?",
+    "answer": "Lesson quizzes can be retaken as many times as you like. The final assessment allows up to 3 attempts, with a 24-hour wait between attempts. Plus members get unlimited attempts.",
+    "keywords": ["retake", "retry", "try again", "final exam", "final assessment", "quiz attempts", "failed the quiz", "exam", "test again", "attempts"]
+  },
+  {
+    "id": "certificates",
+    "category": "Courses",
+    "question": "Do I get a certificate after finishing a course?",
+    "answer": "Yes. Complete all required lessons and pass the final assessment with a score of 70% or higher to earn a certificate. You can download it as a PDF or add it to your LinkedIn profile from the 'Certificates' tab.",
+    "keywords": ["certificate", "certification", "completion certificate", "diploma", "linkedin", "proof of completion", "credential", "badge"]
+  },
+  {
+    "id": "verify-certificate",
+    "category": "Courses",
+    "question": "How can an employer verify my certificate?",
+    "answer": "Every certificate has a unique ID and a public verification link. Share the link (or let the employer enter the ID at learnsphere.example/verify) and they will see your name, the course and the completion date.",
+    "keywords": ["verify certificate", "certificate verification", "employer", "authentic", "certificate id", "validate certificate", "check certificate", "genuine"]
+  },
+  {
+    "id": "subtitles",
+    "category": "Courses",
+    "question": "Do courses have subtitles or translations?",
+    "answer": "Most video lessons have subtitles in English, Spanish, French and Hindi, and you can turn them on in the video player. Course availability in each language is listed on the course page.",
+    "keywords": ["subtitles", "captions", "translation", "language", "closed captions", "spanish", "hindi", "french", "transcript"]
+  },
+  {
+    "id": "instructor-contact",
+    "category": "Courses",
+    "question": "How can I ask the instructor a question?",
+    "answer": "Open the 'Q&A' tab under any lesson and post your question. Instructors and teaching assistants usually reply within 2 business days, and you can also browse questions other learners have already asked.",
+    "keywords": ["ask instructor", "teacher", "question about lesson", "q&a", "mentor", "teaching assistant", "doubt", "discussion forum", "contact instructor"]
+  },
+  {
+    "id": "progress-sync",
+    "category": "Courses",
+    "question": "Is my progress saved across devices?",
+    "answer": "Yes. Your progress, notes and bookmarks sync automatically to your account, so you can start a lesson on your laptop and continue on your phone from the same spot.",
+    "keywords": ["progress saved", "sync", "continue on another device", "resume", "multiple devices", "lost progress", "pick up where I left off", "bookmark"]
+  },
+  {
+    "id": "mobile-app",
+    "category": "Technical",
+    "question": "Is there a mobile app?",
+    "answer": "Yes. The LearnSphere app is available for iOS (iPhone and iPad) and Android. Search for 'LearnSphere' in the App Store or Google Play and log in with your usual account.",
+    "keywords": ["mobile app", "app", "ios", "android", "iphone", "ipad", "phone", "tablet", "app store", "google play"]
+  },
+  {
+    "id": "offline-download",
+    "category": "Technical",
+    "question": "Can I download lessons to watch offline?",
+    "answer": "Yes, Plus members can download video lessons in the mobile app and watch them without an internet connection. Tap the download icon next to a lesson; downloads stay available as long as your subscription is active.",
+    "keywords": ["offline", "download lessons", "download videos", "no internet", "without internet", "save videos", "watch later", "travel", "download for offline"]
+  },
+  {
+    "id": "video-playback",
+    "category": "Technical",
+    "question": "Videos won't play or keep buffering. How do I fix it?",
+    "answer": "Try lowering the video quality in the player settings, refreshing the page and checking your internet connection. Disabling browser extensions (such as ad blockers) or switching to another supported browser often helps. If the problem continues, contact support with your browser and device details.",
+    "keywords": ["video not playing", "buffering", "video stuck", "lag", "slow video", "playback error", "black screen", "video won't load", "stuttering", "freezing"]
+  },
+  {
+    "id": "system-requirements",
+    "category": "Technical",
+    "question": "Which browsers and devices are supported?",
+    "answer": "LearnSphere works on the latest two versions of Chrome, Firefox, Safari and Edge on desktop, and on the iOS and Android apps. We recommend a stable internet connection of at least 3 Mbps for video lessons.",
+    "keywords": ["browser", "supported browsers", "chrome", "firefox", "safari", "edge", "system requirements", "compatible", "internet speed", "devices", "work with"]
+  },
+  {
+    "id": "accessibility",
+    "category": "Technical",
+    "question": "Is the platform accessible for people with disabilities?",
+    "answer": "Yes. LearnSphere follows WCAG 2.1 AA guidelines. It supports screen readers and full keyboard navigation, and video lessons include captions and transcripts. Tell us if something is hard to use at support@learnsphere.example and we'll work on it.",
+    "keywords": ["accessibility", "accessible", "screen reader", "disability", "disabilities", "wcag", "keyboard navigation", "visually impaired", "blind", "deaf", "hearing"]
+  },
+  {
+    "id": "support-contact",
+    "category": "Support",
+    "question": "How do I contact customer support?",
+    "answer": "Email support@learnsphere.example or use the live chat in the bottom-right corner of the Help Center, available Monday to Friday, 9am to 6pm UTC. We reply to emails within 24 hours.",
+    "keywords": ["contact support", "customer support", "customer service", "help", "support email", "live chat", "talk to someone", "speak to a person", "phone number", "human agent", "reach you"]
+  },
+  {
+    "id": "teach",
+    "category": "Instructors",
+    "question": "How can I become an instructor on LearnSphere?",
+    "answer": "Apply through the 'Teach on LearnSphere' page by sharing your expertise and a short sample lesson. We review applications within 10 business days. Approved instructors keep 70% of the revenue from their courses.",
+    "keywords": ["become instructor", "teach", "create a course", "publish a course", "instructor application", "earn money", "sell a course", "revenue share", "be a teacher"]
+  },
+  {
+    "id": "team-plans",
+    "category": "Business",
+    "question": "Do you offer plans for teams or companies?",
+    "answer": "Yes, LearnSphere for Teams starts at 5 seats and includes a shared admin dashboard, progress reports, single sign-on and volume discounts. Contact sales@learnsphere.example for a quote.",
+    "keywords": ["teams", "company", "companies", "business plan", "enterprise", "organization", "employees", "bulk", "seats", "volume discount", "corporate", "sso"]
+  }
+]
