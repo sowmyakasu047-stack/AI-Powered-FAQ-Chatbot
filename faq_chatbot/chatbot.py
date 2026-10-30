@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -18,6 +19,17 @@ from .prompts import (
 from .retriever import FAQRetriever, RetrievalResult, load_faqs
 
 SHORT_FOLLOWUP_WORDS = 4  # messages this short are treated as possible follow-ups
+
+_CONTEXT_BLOCK = re.compile(r"<faq_context>.*?</faq_context>", re.DOTALL | re.IGNORECASE)
+_STRAY_TAG = re.compile(r"</?faq_context>", re.IGNORECASE)
+
+
+def clean_answer(text: str) -> str:
+    """Remove prompt scaffolding that small models sometimes echo back (the <faq_context> block)."""
+    text = _CONTEXT_BLOCK.sub("", text)
+    text = _STRAY_TAG.sub("", text)
+    text = re.sub(r"^\s*Customer question:.*$", "", text, flags=re.MULTILINE | re.IGNORECASE)
+    return text.strip()
 
 
 @dataclass
@@ -66,15 +78,26 @@ class FAQChatbot:
 
     # ---- retrieval --------------------------------------------------------
     def _retrieve(self, text: str) -> list[RetrievalResult]:
-        results = self.retriever.search(text, top_k=self.top_k)
-        if results or len(text.split()) > SHORT_FOLLOWUP_WORDS:
-            return results
-        # Very short message with no match (e.g. "and for students?"): it may be a
-        # follow-up, so retry together with the previous question.
+        """Search for `text`; for short follow-ups also search with the previous question.
+
+        A short message such as "and for subscriptions?" depends on the earlier topic
+        (refunds), so its own matches and the matches for "<previous question> <message>"
+        are merged, keeping each FAQ's best score.
+        """
+        own = self.retriever.search(text, top_k=self.top_k)
+        if len(text.split()) > SHORT_FOLLOWUP_WORDS:
+            return own
         previous = next((m["content"] for m in reversed(self._history) if m["role"] == "user"), None)
-        if previous:
-            return self.retriever.search(f"{previous} {text}", top_k=self.top_k)
-        return results
+        if not previous:
+            return own
+
+        # Merge both searches, keeping each FAQ's best score. The earlier topic can bring in
+        # the right FAQ, while a genuine change of topic still ranks its own matches first.
+        best: dict[str, RetrievalResult] = {}
+        for result in self.retriever.search(f"{previous} {text}", top_k=self.top_k) + own:
+            if result.faq.id not in best or result.score > best[result.faq.id].score:
+                best[result.faq.id] = result
+        return sorted(best.values(), key=lambda r: r.score, reverse=True)[: self.top_k]
 
     # ---- main entry point -------------------------------------------------
     def ask(self, message: str) -> BotReply:
@@ -101,6 +124,12 @@ class FAQChatbot:
             # Degrade gracefully: show the best FAQ answer verbatim. The failed turn is
             # not stored, so the user can simply try again.
             return BotReply(LLM_ERROR_NOTICE + results[0].faq.answer, sources=results, error=str(exc))
+
+        answer = clean_answer(answer)
+        if not answer:  # the model only echoed the prompt: fall back to the best FAQ answer
+            answer = results[0].faq.answer
+            self._remember(text, answer)
+            return BotReply(answer, sources=results)
 
         self._remember(text, answer)
         return BotReply(answer, sources=results, used_llm=True)

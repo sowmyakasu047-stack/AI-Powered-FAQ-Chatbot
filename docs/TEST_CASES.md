@@ -31,6 +31,8 @@ pytest -v
 | TC-16 | History | More turns than `MAX_HISTORY_MESSAGES` | Oldest turns dropped; history starts with a user message | `test_chatbot.py::test_tc16_...` |
 | TC-17 | Ambiguous | Short follow-up ("and for students?") that matches nothing | Retried together with the previous question | `test_chatbot.py::test_tc17_...` |
 | TC-17b | Ambiguous | Long unrelated question after a FAQ question | Searched alone; gets the fallback reply | `test_chatbot.py::test_tc17b_...` |
+| TC-17c | Ambiguous | "What is your refund policy?" then "and for subscriptions?" | Refund FAQ is in the LLM context although the follow-up matches other FAQs on its own | `test_chatbot.py::test_tc17c_...` |
+| TC-17d | Ambiguous | "Do you offer student discounts?" then "how do I cancel" | New topic's FAQ stays ranked first | `test_chatbot.py::test_tc17d_...` |
 | TC-18 | API failure | LLM raises `LLMError` | Best FAQ answer shown with a notice; failed turn not stored | `test_chatbot.py::test_tc18_...` |
 | TC-19 | History | `reset()` | History is empty | `test_chatbot.py::test_tc19_...` |
 | TC-20 | Modes | No LLM configured (`LLM_PROVIDER=none`) | FAQ answer returned verbatim | `test_chatbot.py::test_tc20_...` |

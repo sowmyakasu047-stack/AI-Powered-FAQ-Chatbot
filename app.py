@@ -61,6 +61,15 @@ with st.sidebar:
 
 
 # ---- show the conversation so far -------------------------------------------
+def answer_label(used_llm: bool, has_sources: bool) -> str:
+    """Tell the user where an answer came from."""
+    if used_llm:
+        return "✨ AI-generated from our FAQ"
+    if has_sources:
+        return "📄 FAQ text (no AI)"
+    return "ℹ️ Standard reply"
+
+
 def render_sources(sources) -> None:
     if sources:
         with st.expander("FAQ entries used"):
@@ -71,6 +80,8 @@ def render_sources(sources) -> None:
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+        if message["role"] == "assistant":
+            st.caption(message.get("label", ""))
         render_sources(message.get("sources"))
 
 # ---- handle a new question ---------------------------------------------------
@@ -86,8 +97,10 @@ if prompt:
             reply = st.session_state.chatbot.ask(prompt)
         st.markdown(reply.text)
         sources = [{"question": r.faq.question, "score": r.score} for r in reply.sources]
+        label = answer_label(reply.used_llm, bool(reply.sources))
+        st.caption(label)
         render_sources(sources)
         if reply.error:
             st.warning(reply.error)
 
-    st.session_state.messages.append({"role": "assistant", "content": reply.text, "sources": sources})
+    st.session_state.messages.append({"role": "assistant", "content": reply.text, "sources": sources, "label": label})

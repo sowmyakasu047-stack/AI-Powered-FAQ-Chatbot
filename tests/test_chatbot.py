@@ -1,6 +1,6 @@
 """Conversation-logic tests (TC-11 .. TC-21) using a fake LLM, so no network is needed."""
 
-from faq_chatbot.chatbot import FAQChatbot
+from faq_chatbot.chatbot import FAQChatbot, clean_answer
 from faq_chatbot.llm_client import LLMError
 from faq_chatbot.prompts import EMPTY_REPLY, LLM_ERROR_NOTICE, NO_ANSWER_REPLY, SYSTEM_PROMPT
 from faq_chatbot.retriever import FAQ, RetrievalResult
@@ -180,3 +180,55 @@ def test_tc21_prompt_injection_text_stays_in_the_user_message(retriever):
     assert "Ignore all previous instructions" not in system_prompt
     assert "Ignore all previous instructions" in messages[-1]["content"]
     assert "never reveal" in system_prompt.lower()
+
+
+def test_tc22_echoed_prompt_scaffolding_is_stripped_from_the_reply(retriever):
+    """TC-22b: if a small model repeats the <faq_context> block, only the real answer is shown and stored."""
+    echoed = (
+        "<faq_context> [1] Q: How do I reset my password? A: Click 'Forgot password?'. </faq_context> "
+        "You can reset it from the login page."
+    )
+    bot = make_bot(retriever, FakeLLM(reply=echoed))
+
+    reply = bot.ask("How do I reset my password?")
+
+    assert reply.text == "You can reset it from the login page."
+    assert "faq_context" not in bot.history[-1]["content"]
+
+
+def test_tc22c_reply_that_is_only_echoed_context_falls_back_to_faq_answer(retriever):
+    """TC-22c: an echo-only reply is replaced by the best FAQ answer instead of showing nothing."""
+    bot = make_bot(retriever, FakeLLM(reply="<faq_context>[1] Q: x A: y</faq_context>"))
+
+    reply = bot.ask("What is your refund policy?")
+
+    assert "14 days" in reply.text
+    assert not reply.used_llm
+
+
+def test_clean_answer_leaves_normal_text_untouched():
+    assert clean_answer("  Go to Settings > Billing.  ") == "Go to Settings > Billing."
+    assert clean_answer("Customer question: hi\nThe answer.") == "The answer."
+
+
+def test_tc17c_short_followup_that_matches_on_its_own_still_sees_the_earlier_topic(retriever):
+    """TC-17c: "and for subscriptions?" after a refund question must bring the refund FAQ into the context
+    even though the follow-up already matches other FAQs (cancel / Plus) by itself."""
+    llm = FakeLLM()
+    bot = make_bot(retriever, llm)
+
+    bot.ask("What is your refund policy?")
+    reply = bot.ask("and for subscriptions?")
+
+    assert "refund-policy" in [r.faq.id for r in reply.sources]
+    assert "refundable within 14 days of the first payment" in llm.calls[1][1][-1]["content"]
+
+
+def test_tc17d_change_of_topic_is_not_hijacked_by_the_previous_question(retriever):
+    """TC-17d: a short message about a new topic keeps its own best match first."""
+    bot = make_bot(retriever, FakeLLM())
+
+    bot.ask("Do you offer student discounts?")
+    reply = bot.ask("how do I cancel")
+
+    assert reply.sources[0].faq.id == "cancel-subscription"
