@@ -176,6 +176,18 @@ class FAQRetriever:
     def _idf(self, term: str) -> float:
         return math.log((self._n_docs + 1) / (self._doc_freq.get(term, 0) + 1)) + 1.0
 
+    # Verbs that only express "does it exist?", so they are not the thing being asked about.
+    EXISTENCE_VERBS = frozenset(tokenize("have sell offer support provide accept ship include pay use"))
+
+    def uncovered_terms(self, query: str, results: Iterable["RetrievalResult"]) -> list[str]:
+        """Words in `query` that appear in none of the retrieved FAQ entries (question, keywords or answer)."""
+        index_by_id = {faq.id: i for i, faq in enumerate(self.faqs)}
+        covered: set[str] = set()
+        for result in results:
+            covered.update(self._vectors[index_by_id[result.faq.id]])
+        wanted = dict.fromkeys(tokenize(query))
+        return [token for token in wanted if token not in covered and token not in self.EXISTENCE_VERBS]
+
     # ---- search ---------------------------------------------------------
     def score(self, query_tokens: list[str]) -> list[float]:
         """Return one combined score (0..1) per FAQ for the given query tokens."""
