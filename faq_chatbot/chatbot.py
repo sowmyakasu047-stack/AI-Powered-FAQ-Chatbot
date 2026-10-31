@@ -20,6 +20,18 @@ from .retriever import FAQRetriever, RetrievalResult, load_faqs
 
 SHORT_FOLLOWUP_WORDS = 4  # messages this short are treated as possible follow-ups
 
+# "Do you have / sell / offer ...?" style questions. A model tends to answer these with a confident
+# "no" even when the FAQ says nothing, so they get a guard (see FAQChatbot._asks_about_unknown_thing).
+_EXISTENCE_QUESTION = re.compile(
+    r"^\s*(?:(?:do|does)\s+(?:you|your|the\s+\w+)\s+(?:have|sell|offer|support|provide|accept|ship|include)"
+    r"|(?:is|are)\s+there"
+    r"|can\s+i\s+pay\s+(?:with|using|by))\b",
+    re.IGNORECASE,
+)
+
+# Messages that start like this ("and for students?", "also for teams?") continue the previous topic.
+_FOLLOWUP_OPENER = re.compile(r"^\s*(?:and|also|plus)\b", re.IGNORECASE)
+
 _CONTEXT_BLOCK = re.compile(r"<faq_context>.*?</faq_context>", re.DOTALL | re.IGNORECASE)
 _STRAY_TAG = re.compile(r"</?faq_context>", re.IGNORECASE)
 
@@ -91,13 +103,32 @@ class FAQChatbot:
         if not previous:
             return own
 
-        # Merge both searches, keeping each FAQ's best score. The earlier topic can bring in
-        # the right FAQ, while a genuine change of topic still ranks its own matches first.
+        combined = self.retriever.search(f"{previous} {text}", top_k=self.top_k)
+        if _FOLLOWUP_OPENER.match(text):
+            # An explicit follow-up ("and for subscriptions?"): the earlier topic comes first,
+            # the follow-up's own matches fill the remaining slots.
+            merged: list[RetrievalResult] = []
+            seen: set[str] = set()
+            for result in combined + own:
+                if result.faq.id not in seen:
+                    seen.add(result.faq.id)
+                    merged.append(result)
+            return merged[: self.top_k]
+
+        # Otherwise merge both searches by best score, so a genuine change of topic still wins.
         best: dict[str, RetrievalResult] = {}
-        for result in self.retriever.search(f"{previous} {text}", top_k=self.top_k) + own:
+        for result in combined + own:
             if result.faq.id not in best or result.score > best[result.faq.id].score:
                 best[result.faq.id] = result
         return sorted(best.values(), key=lambda r: r.score, reverse=True)[: self.top_k]
+
+    def _previous_question(self) -> str | None:
+        return next((m["content"] for m in reversed(self._history) if m["role"] == "user"), None)
+
+    def _asks_about_unknown_thing(self, text: str, results: list[RetrievalResult]) -> bool:
+        """True for 'do you have X?' questions where X (e.g. 'linux', 'laptops') is in none of the retrieved FAQs."""
+        uncovered_terms = getattr(self.retriever, "uncovered_terms", None)
+        return bool(_EXISTENCE_QUESTION.match(text) and uncovered_terms and uncovered_terms(text, results))
 
     # ---- main entry point -------------------------------------------------
     def ask(self, message: str) -> BotReply:
@@ -108,7 +139,7 @@ class FAQChatbot:
             return BotReply(TOO_LONG_REPLY.format(limit=self.max_input_chars))
 
         results = self._retrieve(text)
-        if not results:
+        if not results or self._asks_about_unknown_thing(text, results):
             self._remember(text, NO_ANSWER_REPLY)
             return BotReply(NO_ANSWER_REPLY)
 
@@ -117,7 +148,8 @@ class FAQChatbot:
             self._remember(text, answer)
             return BotReply(answer, sources=results)
 
-        messages = self._history + [{"role": "user", "content": build_user_prompt(text, results)}]
+        previous = self._previous_question() if _FOLLOWUP_OPENER.match(text) else None
+        messages = self._history + [{"role": "user", "content": build_user_prompt(text, results, previous)}]
         try:
             answer = self.llm.generate(SYSTEM_PROMPT, messages)
         except LLMError as exc:

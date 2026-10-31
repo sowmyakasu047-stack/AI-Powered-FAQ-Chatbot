@@ -232,3 +232,68 @@ def test_tc17d_change_of_topic_is_not_hijacked_by_the_previous_question(retrieve
     reply = bot.ask("how do I cancel")
 
     assert reply.sources[0].faq.id == "cancel-subscription"
+
+
+import pytest
+
+
+@pytest.mark.parametrize(
+    "question",
+    ["Do you have a Linux desktop app?", "Do you sell laptops?", "Can I pay with Bitcoin?", "Is there a Windows phone app?"],
+)
+def test_tc29_existence_questions_about_unknown_things_skip_the_llm(retriever, question):
+    """TC-29: 'do you have/sell X?' where X is not in the FAQ gets the fixed no-information reply, never a guessed 'no'."""
+    llm = FakeLLM(reply="We don't have that.")
+    bot = make_bot(retriever, llm)
+
+    reply = bot.ask(question)
+
+    assert reply.text == NO_ANSWER_REPLY
+    assert llm.calls == []
+
+
+@pytest.mark.parametrize(
+    "question",
+    ["Do you offer student discounts?", "Do you have a mobile app?", "Can I pay with PayPal?", "Does the platform support screen readers?"],
+)
+def test_tc29b_existence_questions_about_known_things_still_reach_the_llm(retriever, question):
+    """TC-29b: the guard does not block existence questions the FAQ can answer."""
+    llm = FakeLLM()
+    bot = make_bot(retriever, llm)
+
+    reply = bot.ask(question)
+
+    assert reply.used_llm
+    assert len(llm.calls) == 1
+
+
+@pytest.mark.parametrize(
+    "first, followup, expected_first",
+    [
+        ("What is your refund policy?", "and for subscriptions?", "refund-policy"),
+        ("How do I reset my password?", "and for students?", "password-reset"),
+    ],
+)
+def test_tc17e_explicit_followup_ranks_the_earlier_topic_first(retriever, first, followup, expected_first):
+    """TC-17e: messages starting with 'and ...' keep the earlier topic as the top FAQ (the LLM uses the first one)."""
+    bot = make_bot(retriever, FakeLLM())
+
+    bot.ask(first)
+    reply = bot.ask(followup)
+
+    assert reply.sources[0].faq.id == expected_first
+
+
+def test_tc17f_explicit_followup_is_sent_to_the_llm_as_one_complete_question(retriever):
+    """TC-17f: for 'and ...' follow-ups the LLM sees 'earlier question + follow-up' as a single question."""
+    llm = FakeLLM()
+    bot = make_bot(retriever, llm)
+
+    bot.ask("What is your refund policy?")
+    bot.ask("and for subscriptions?")
+    bot.ask("how do I cancel")  # not an 'and ...' follow-up: sent unchanged
+
+    second_prompt = llm.calls[1][1][-1]["content"]
+    third_prompt = llm.calls[2][1][-1]["content"]
+    assert second_prompt.endswith("Customer question: What is your refund policy? and for subscriptions?")
+    assert third_prompt.endswith("Customer question: how do I cancel")

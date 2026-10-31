@@ -5,6 +5,7 @@ Run with:  streamlit run app.py
 
 import streamlit as st
 
+from faq_chatbot import __version__
 from faq_chatbot.chatbot import build_chatbot
 from faq_chatbot.config import ConfigError, Settings
 
@@ -50,6 +51,7 @@ with st.sidebar:
     mode = "retrieval only (no LLM)" if settings.provider == "none" else f"{settings.provider} / {settings.resolved_model}"
     st.write(f"**Mode:** {mode}")
     st.write(f"**FAQs loaded:** {len(st.session_state.chatbot.retriever.faqs)}")
+    st.write(f"**Version:** {__version__}")
     st.button("🗑️ Clear conversation", on_click=clear_chat, use_container_width=True)
 
     st.header("Try asking")
@@ -61,6 +63,11 @@ with st.sidebar:
 
 
 # ---- show the conversation so far -------------------------------------------
+def safe(text: str) -> str:
+    """Escape $ so Streamlit does not treat prices like "$19 ... $190" as LaTeX math."""
+    return text.replace("$", "\\$")
+
+
 def answer_label(used_llm: bool, has_sources: bool) -> str:
     """Tell the user where an answer came from."""
     if used_llm:
@@ -79,7 +86,7 @@ def render_sources(sources) -> None:
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+        st.markdown(safe(message["content"]))
         if message["role"] == "assistant":
             st.caption(message.get("label", ""))
         render_sources(message.get("sources"))
@@ -90,12 +97,12 @@ prompt = st.chat_input("Type your question here...") or st.session_state.pop("qu
 if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.markdown(safe(prompt))
 
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             reply = st.session_state.chatbot.ask(prompt)
-        st.markdown(reply.text)
+        st.markdown(safe(reply.text))
         sources = [{"question": r.faq.question, "score": r.score} for r in reply.sources]
         label = answer_label(reply.used_llm, bool(reply.sources))
         st.caption(label)
